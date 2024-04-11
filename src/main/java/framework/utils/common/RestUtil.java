@@ -13,11 +13,17 @@ import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
+import io.restassured.http.Header;
+import io.restassured.http.Headers;
+import io.restassured.http.Method;
+import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
 import java.io.IOException;
 import java.util.Map;
+
+import org.json.simple.JSONObject;
 
 import static io.restassured.RestAssured.given;
 
@@ -31,6 +37,7 @@ public class RestUtil {
     private RequestSpecBuilder requestSpecBuilder;
     private RequestSpecification requestSpecification;
     private Response apiResponse;
+    private String accessToken;
 
     private HttpStatus expectedStatusCode = HttpStatus.OK;
     private String expectedResponseContentType;
@@ -170,6 +177,18 @@ public class RestUtil {
         requestSpecBuilder.setBody(body);
         return this;
     }
+    
+    /**
+     * Defines Body to Request Specification
+     *
+     * @param body
+     * @return this
+     */
+    public RestUtil body(JSONObject body) {
+        requestSpecBuilder.setBody(body);
+        return this;
+    }
+    
 
     /**
      * Defines the Expected Status Code following successful api execution for validation
@@ -278,18 +297,76 @@ public class RestUtil {
                         .log().all()
                         .filter(new APIResponseFilter())
                         .spec(requestSpecification)
-                        .when()
+                .when()
                         .post()
-                        .then()
+                .then()
                         .assertThat()
                         .statusCode(expectedStatusCode.getCode())
                         .contentType(expectedResponseContentType)
-                        .and()
+                .and()
                         .extract()
                         .response();
 
         return this;
     }
+    
+    public RestUtil post(String requestBody) {
+        requestSpecification = requestSpecBuilder.build();
+        apiResponse =
+                given()
+                        .log().all()
+                        .header("Content-Type", "application/json") // Example of adding a header
+                        .filter(new APIResponseFilter())
+                        .spec(requestSpecification)
+                        .body(requestBody) // Include the request body here
+                .when()
+                        .post() // Change this to post()
+                .then()
+                        .assertThat()
+                        .statusCode(expectedStatusCode.getCode())
+                        .contentType(expectedResponseContentType)
+                .and()
+                        .extract()
+                        .response();
+       //  accessToken = apiResponse.jsonPath().getString("authorization.accessToken.token");
+     // Extract the authorization token from the response
+        try {
+            JsonPath jsonPath = apiResponse.jsonPath();
+            accessToken = jsonPath.getString("authorization.accessToken.token");
+        } catch (Exception e) {
+            // Handle any exception occurred during token extraction
+            System.err.println("Error extracting access token: " + e.getMessage());
+        }
+
+
+        return this;
+    }
+    
+    
+    public RestUtil post_withAuth(String requestBody) {
+        requestSpecification = requestSpecBuilder.build();
+        apiResponse =
+                given()
+                        .log().all()
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDUy0xNDAwIiwidXNlcl9JZCI6IjYzZGI4YzYzMzdmMmI1NmFjZDQ0YzYyNyIsInVzZXJfbmFtZSI6IkNTLTE0MDAiLCJmaXJzdF9uYW1lIjoic2hyaWtydXNobmEiLCJsYXN0X25hbWUiOiJzb25rYXIiLCJyb2xlX2NvZGUiOiJwbGF5ZXIiLCJ0b2tlbl90eXBlIjoicGxheWVyIiwibG9iYnlDb2RlcyI6WyJDUyJdLCJyYW5kb20iOiJiNDEzOTJkMS05NDkwLTQ2NjctYTBjNy1jZjUwMjkyMDIwMWYiLCJpYXQiOjE3MTI3NTE2MDcsImV4cCI6MTcxMjgzODAwN30.9w3wQI1_KjCXlIgKZUtomTZr1iIQ4UuubmssoBJgcWI")
+                        .header("Content-Type", "application/json") // Example of adding a header
+                        .filter(new APIResponseFilter())
+                        .spec(requestSpecification)
+                        .body(requestBody) // Include the request body here
+                .when()
+                        .post() // Change this to post()
+                .then()
+                        .assertThat()
+                        .statusCode(expectedStatusCode.getCode())
+                        .contentType(expectedResponseContentType)
+                .and()
+                        .extract()
+                        .response();
+        
+
+        return this;
+    }
+
 
     /**
      * Hits the Pre-Defined Request Specification as GET Request
@@ -318,6 +395,33 @@ public class RestUtil {
                         .response();
 
         return this;
+    }
+
+    public RestUtil get_withAuth() {
+        requestSpecification = requestSpecBuilder.build();
+        apiResponse =
+                given()
+                        .log().all()
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJzeXN0ZW1hZG1pbiIsInVzZXJfSWQiOiI2MmVlMmI4MzQ1MGIwNzJiNTBjMDgzOGIiLCJ1c2VyX25hbWUiOiJzeXN0ZW1hZG1pbiIsImZpcnN0X25hbWUiOiJTeXN0ZW0iLCJsYXN0X25hbWUiOiJBZG1pbiIsInJvbGVfY29kZSI6IlNVUEVSX0FETUlOIiwidXNlcl90eXBlIjoiU1VQRVJfQURNSU4iLCJ0b2tlbl90eXBlIjoicG9ydGFsIiwiZW1haWwiOiJTeXN0ZW1fMUB5b3BtYWlsLmNvbSIsInJlYWRVc2VyIjpmYWxzZSwiaWF0IjoxNzExOTQ5MDU3LCJleHAiOjE3NDM0ODUwNTd9.Y0ofUTkUB8d8_lAWM0KQvblV97NX6wWSGaarVDkYtn8") // Example of adding a header
+                        .filter(new APIResponseFilter())
+                        .spec(requestSpecification)
+                        .when()
+                        .get()
+                        .then()
+                        .assertThat()
+                        .statusCode(expectedStatusCode.getCode())
+                        .contentType(expectedResponseContentType)
+                        .and()
+                        .extract()
+                        .response();
+
+        return this;
+    }
+    
+    public String getAccessToken() {
+//        JsonPath jsonPath = apiResponse.jsonPath();
+//        return jsonPath.getString("authorization.accessToken.token");
+    	  return accessToken;
     }
 
     /**
@@ -370,4 +474,31 @@ public class RestUtil {
         }
     }
 
+    public Response sendPutRequestWithAuthorization(JSONObject requestBody, String ids) {
+		RestAssured.baseURI = "https://qaautomation-api.cosmoslots.tech";
+		RequestSpecification httpRequest = RestAssured.given();
+		httpRequest.auth().oauth2(accessToken); // Set the authorization header
+		httpRequest.header("Content-Type", "application/json");
+		httpRequest.body(requestBody.toJSONString());
+		return httpRequest.request(Method.PUT, "auth/v1/user/change-password/"+ids);
+	}
+	
+	
+	
+	public Response sendPostRequestWithAuthorization(String path, JSONObject requestBody, String authToken) {
+		RestAssured.baseURI = "https://qaautomation-api.cosmoslots.tech/";
+		RequestSpecification httpRequest = RestAssured.given();
+		httpRequest.auth().oauth2(authToken); // Set the authorization header
+		httpRequest.header("Content-Type", "application/json");
+		httpRequest.body(requestBody.toJSONString());
+		return httpRequest.request(Method.POST, path);
+	}
+
+	public Response sendPostRequestWithAuthorization(String path, JSONObject requestBody) {
+		RestAssured.baseURI = "https://qaautomation-api.cosmoslots.tech/";
+		RequestSpecification httpRequest = RestAssured.given();
+		httpRequest.header("Content-Type", "application/json");
+		httpRequest.body(requestBody.toJSONString());
+		return httpRequest.request(Method.POST, path);
+	}
 }

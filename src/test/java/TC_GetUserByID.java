@@ -25,7 +25,7 @@ public class TC_GetUserByID extends TestInit {
 
         UserProfileService
                 .init()
-                .getUserProfileByID("KRISHAN001");
+                .getUserProfileByID("63db8c6337f2b56acd44c627");
 
     }
 

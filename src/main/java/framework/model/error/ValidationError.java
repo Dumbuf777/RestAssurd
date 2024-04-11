@@ -9,6 +9,7 @@ public class ValidationError {
 
     private String timestamp;
     private String status;
+    private String code;
     private String error;
     private String message;
     private String path;
@@ -27,6 +28,14 @@ public class ValidationError {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getError() {

@@ -66,7 +66,7 @@ public class UserProfileService {
 
         RestUtil restInstance =
                 RestUtil.init()
-                        .path(APIEndPoint.USER_PROFILES + "{userid}")
+                        .path(APIEndPoint.USER_PROFILES + userid)
                         .pathParam("userid", userid)
                         .expectedStatusCode(httpStatus)
                         .expectedResponseContentType(responseContentType)

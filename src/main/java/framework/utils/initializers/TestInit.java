@@ -6,6 +6,7 @@ import framework.utils.reportManagement.OutputUtil;
 import framework.utils.reportManagement.extent.ExtentTestManager;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.logging.log4j.core.LoggerContext;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
@@ -23,17 +24,16 @@ public class TestInit {
     private final Logger _logger = LogManager.getLogger(TestInit.class);
 
     @BeforeSuite(alwaysRun = true)
-    public void initializeTestSuite(ITestContext context) {
+    public void initializeTestSuite() {
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd-MM-yyyy_HH-mm-ss");
         System.setProperty("current.date", LocalDateTime.now().format(format));
         OutputUtil.createOutputDirectory();
 
         System.setProperty("applogs.path", PathConfig.getApplogsPath() + "ExecutionLog.log");
-        org.apache.logging.log4j.core.LoggerContext ctx =
-                (org.apache.logging.log4j.core.LoggerContext) LogManager.getContext(false);
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
         ctx.reconfigure();
 
-        _logger.info("*** Test Suite " + context.getName() + " started ***");
+      //  _logger.info("*** Test Suite " + context.getName() + " started ***");
     }
 
     @BeforeClass(alwaysRun = true)
@@ -60,8 +60,8 @@ public class TestInit {
     }
 
     @AfterSuite(alwaysRun = true)
-    public void completeSuite(ITestContext context) {
-        _logger.info("*** Test Suite " + context.getName() + " ending ***");
+    public void completeSuite() {
+        //_logger.info("*** Test Suite " + context.getName() + " ending ***");
     }
 
 }
