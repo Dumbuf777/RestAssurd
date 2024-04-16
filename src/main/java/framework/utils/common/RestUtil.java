@@ -37,7 +37,7 @@ public class RestUtil {
     private RequestSpecBuilder requestSpecBuilder;
     private RequestSpecification requestSpecification;
     private Response apiResponse;
-    private String accessToken;
+    public String accessToken="";
 
     private HttpStatus expectedStatusCode = HttpStatus.OK;
     private String expectedResponseContentType;
@@ -239,13 +239,13 @@ public class RestUtil {
                         .log().all()
                         .filter(new APIResponseFilter())
                         .spec(requestSpecification)
-                        .when()
+                 .when()
                         .put()
-                        .then()
+                 .then()
                         .assertThat()
                         .statusCode(expectedStatusCode.getCode())
                         .contentType(expectedResponseContentType)
-                        .and()
+                 .and()
                         .extract()
                         .response();
 
@@ -329,18 +329,26 @@ public class RestUtil {
                         .extract()
                         .response();
        //  accessToken = apiResponse.jsonPath().getString("authorization.accessToken.token");
-     // Extract the authorization token from the response
+     // Extract the access token from the response
         try {
             JsonPath jsonPath = apiResponse.jsonPath();
             accessToken = jsonPath.getString("authorization.accessToken.token");
+            System.out.println(accessToken);
         } catch (Exception e) {
             // Handle any exception occurred during token extraction
             System.err.println("Error extracting access token: " + e.getMessage());
         }
 
-
         return this;
     }
+    
+    public String getAccessToken() {
+		return accessToken;
+	}
+
+	public void setAccessToken(String accessToken) {
+		this.accessToken = accessToken;
+	}
     
     
     public RestUtil post_withAuth(String requestBody) {
@@ -348,7 +356,7 @@ public class RestUtil {
         apiResponse =
                 given()
                         .log().all()
-                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDUy0xNDAwIiwidXNlcl9JZCI6IjYzZGI4YzYzMzdmMmI1NmFjZDQ0YzYyNyIsInVzZXJfbmFtZSI6IkNTLTE0MDAiLCJmaXJzdF9uYW1lIjoic2hyaWtydXNobmEiLCJsYXN0X25hbWUiOiJzb25rYXIiLCJyb2xlX2NvZGUiOiJwbGF5ZXIiLCJ0b2tlbl90eXBlIjoicGxheWVyIiwibG9iYnlDb2RlcyI6WyJDUyJdLCJyYW5kb20iOiJiNDEzOTJkMS05NDkwLTQ2NjctYTBjNy1jZjUwMjkyMDIwMWYiLCJpYXQiOjE3MTI3NTE2MDcsImV4cCI6MTcxMjgzODAwN30.9w3wQI1_KjCXlIgKZUtomTZr1iIQ4UuubmssoBJgcWI")
+                        .header("Authorization", "Bearer eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJDUy0xNDAwIiwidXNlcl9JZCI6IjYzZGI4YzYzMzdmMmI1NmFjZDQ0YzYyNyIsInVzZXJfbmFtZSI6IkNTLTE0MDAiLCJmaXJzdF9uYW1lIjoic2hyaWtydXNobmEiLCJsYXN0X25hbWUiOiJzb25rYXIiLCJyb2xlX2NvZGUiOiJwbGF5ZXIiLCJ0b2tlbl90eXBlIjoicGxheWVyIiwibG9iYnlDb2RlcyI6WyJDUyJdLCJyYW5kb20iOiI0MTlmYmUzNC1mZmFhLTRkMzYtYWM0Ny1mOGZkMTlkZTcxNGIiLCJpYXQiOjE3MTI5MTc1NTIsImV4cCI6MTcxMzAwMzk1Mn0.J1lSfeaNHi86I_7xgfNmQlL5Q8Tq9UATdq8KondOgBc")
                         .header("Content-Type", "application/json") // Example of adding a header
                         .filter(new APIResponseFilter())
                         .spec(requestSpecification)
@@ -366,6 +374,32 @@ public class RestUtil {
 
         return this;
     }
+    
+    public RestUtil post_withAuth(String requestBody,String token) {
+        requestSpecification = requestSpecBuilder.build();
+        apiResponse =
+                given()
+                        .log().all()
+                        .header("Authorization", "Bearer "+token)
+                        .header("Content-Type", "application/json") // Example of adding a header
+                        .filter(new APIResponseFilter())
+                        .spec(requestSpecification)
+                        .body(requestBody) // Include the request body here
+                .when()
+                        .post() // Change this to post()
+                .then()
+                        .assertThat()
+                        .statusCode(expectedStatusCode.getCode())
+                        .contentType(expectedResponseContentType)
+                .and()
+                        .extract()
+                        .response();
+        
+
+        return this;
+    }
+    
+    
 
 
     /**
@@ -418,12 +452,7 @@ public class RestUtil {
         return this;
     }
     
-    public String getAccessToken() {
-//        JsonPath jsonPath = apiResponse.jsonPath();
-//        return jsonPath.getString("authorization.accessToken.token");
-    	  return accessToken;
-    }
-
+  
     /**
      * Returns the apiResponse Object
      *

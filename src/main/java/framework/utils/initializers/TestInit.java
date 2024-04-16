@@ -29,9 +29,9 @@ public class TestInit {
         System.setProperty("current.date", LocalDateTime.now().format(format));
         OutputUtil.createOutputDirectory();
 
-        System.setProperty("applogs.path", PathConfig.getApplogsPath() + "ExecutionLog.log");
-        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-        ctx.reconfigure();
+//        System.setProperty("applogs.path", PathConfig.getApplogsPath() + "ExecutionLog.log");
+//        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+//        ctx.reconfigure();
 
       //  _logger.info("*** Test Suite " + context.getName() + " started ***");
     }

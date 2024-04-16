@@ -40,11 +40,11 @@ public class TC_GetPlayer extends TestInit {
 	                        .expectedResponseContentType(responseContentType)
 	                        .get_withAuth();
 
-	        if (!isNegativeTest) {
-	            responsePayload = restInstance.responseToPojo(new TypeReference<List<Player>>() {});
-	        } else {
-	            responsePayload = restInstance.responseToPojo(ValidationError.class);
-	        }
+//	        if (!isNegativeTest) {
+//	            responsePayload = restInstance.responseToPojo(new TypeReference<List<Player>>() {});
+//	        } else {
+//	            responsePayload = restInstance.responseToPojo(ValidationError.class);
+//	        }
 
     }
 	

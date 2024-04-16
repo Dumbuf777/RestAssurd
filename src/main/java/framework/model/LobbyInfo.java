@@ -1,17 +1,17 @@
 package framework.model;
 
-public class Lobby {
-	
-    private String id;
+public class LobbyInfo {
+
+    private String lobbyId;
     private String code;
     private String name;
     private String lobbyType;
-    private String url;
-    public String getId() {
-        return id;
+    private Object primary;
+    public String getLobbyId() {
+        return lobbyId;
     }
-    public void setId(String id) {
-        this.id = id;
+    public void setLobbyId(String lobbyId) {
+        this.lobbyId = lobbyId;
     }
     public String getCode() {
         return code;
@@ -31,12 +31,11 @@ public class Lobby {
     public void setLobbyType(String lobbyType) {
         this.lobbyType = lobbyType;
     }
-    public String getUrl() {
-        return url;
+    public Object getPrimary() {
+        return primary;
     }
-    public void setUrl(String url) {
-        this.url = url;
+    public void setPrimary(Object primary) {
+        this.primary = primary;
     }
-
 
 }

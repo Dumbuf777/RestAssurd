@@ -1,7 +1,13 @@
 package framework.model;
 
 public class Parent {
-	
+
+	private String userId;
+	private String userType;
+	private String username;
+	private String roleCode;
+	private String roleName;
+
 	public String getUserId() {
 		return userId;
 	}
@@ -40,16 +46,6 @@ public class Parent {
 
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
-	}
-
-	private String userId;
-    private String userType;
-    private String username;
-    private String roleCode;
-    private String roleName;
-
-	public Parent() {
-		// TODO Auto-generated constructor stub
 	}
 
 }
