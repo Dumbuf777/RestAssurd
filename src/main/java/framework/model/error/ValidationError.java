@@ -13,6 +13,7 @@ public class ValidationError {
     private String error;
     private String message;
     private String path;
+    private String fieldErrorDetails;
 
     public String getTimestamp() {
         return timestamp;
@@ -60,5 +61,13 @@ public class ValidationError {
 
     public void setPath(String path) {
         this.path = path;
+    }
+    
+    public String getFieldErrorDetails() {
+        return path;
+    }
+
+    public void setFieldErrorDetails(String fieldErrorDetails) {
+        this.fieldErrorDetails = fieldErrorDetails;
     }
 }

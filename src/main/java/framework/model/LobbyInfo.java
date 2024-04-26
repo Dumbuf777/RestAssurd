@@ -7,6 +7,7 @@ public class LobbyInfo {
     private String name;
     private String lobbyType;
     private Object primary;
+    
     public String getLobbyId() {
         return lobbyId;
     }

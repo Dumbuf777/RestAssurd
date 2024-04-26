@@ -4,9 +4,15 @@ import com.aventstack.extentreports.Status;
 import framework.utils.globalConstants.PathConfig;
 import framework.utils.reportManagement.OutputUtil;
 import framework.utils.reportManagement.extent.ExtentTestManager;
+import io.restassured.RestAssured;
+import io.restassured.http.Method;
+import io.restassured.response.Response;
+import io.restassured.specification.RequestSpecification;
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.LoggerContext;
+import org.json.simple.JSONObject;
 import org.testng.ITestContext;
 import org.testng.ITestResult;
 import org.testng.annotations.*;
@@ -29,11 +35,11 @@ public class TestInit {
         System.setProperty("current.date", LocalDateTime.now().format(format));
         OutputUtil.createOutputDirectory();
 
-//        System.setProperty("applogs.path", PathConfig.getApplogsPath() + "ExecutionLog.log");
-//        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
-//        ctx.reconfigure();
+        System.setProperty("applogs.path", PathConfig.getApplogsPath() + "ExecutionLog.log");
+        LoggerContext ctx = (LoggerContext) LogManager.getContext(false);
+        ctx.reconfigure();
 
-      //  _logger.info("*** Test Suite " + context.getName() + " started ***");
+       _logger.info("*** Test Suite  started ***");
     }
 
     @BeforeClass(alwaysRun = true)
@@ -61,7 +67,8 @@ public class TestInit {
 
     @AfterSuite(alwaysRun = true)
     public void completeSuite() {
-        //_logger.info("*** Test Suite " + context.getName() + " ending ***");
+        _logger.info("*** Test Suite  ending ***");
     }
-
+    
+	
 }

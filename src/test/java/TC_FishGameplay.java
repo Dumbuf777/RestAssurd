@@ -1,4 +1,3 @@
-import java.util.HashMap;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -9,8 +8,6 @@ import org.testng.annotations.Test;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import framework.model.FishGameSession;
-import framework.model.GameSession;
-import framework.model.Player;
 import framework.model.error.ValidationError;
 import framework.service.PlayerService;
 import framework.utils.common.RestUtil;
@@ -111,12 +108,13 @@ public class TC_FishGameplay  extends TestInit {
 
 	     }
 	    
-		public Response sendPostRequestWithAuthorization(String path, JSONObject requestBody) {
+	    public Response sendPostRequestWithAuthorization(String path, JSONObject requestBody) {
 			RestAssured.baseURI = "https://qaautomation-api.cosmoslots.tech/";
 			RequestSpecification httpRequest = RestAssured.given();
 			httpRequest.header("Content-Type", "application/json");
 			httpRequest.body(requestBody.toJSONString());
 			return httpRequest.request(Method.POST, path);
 		}
+
 	
 }
