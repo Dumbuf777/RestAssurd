@@ -8,6 +8,8 @@ import org.testng.annotations.Test;
 import com.fasterxml.jackson.core.type.TypeReference;
 
 import framework.model.FishGameSession;
+import framework.model.PlayerData;
+import framework.model.SystemAdmin;
 import framework.model.error.ValidationError;
 import framework.service.PlayerService;
 import framework.utils.common.RestUtil;
@@ -28,34 +30,35 @@ public class TC_FishGameplay  extends TestInit {
 	 private final Logger _logger = LogManager.getLogger(PlayerService.class);
 
 	    private Object responsePayload;
+		private Object playerData;
 	    private boolean isNegativeTest = false;
 	    private HttpStatus httpStatus = HttpStatus.OK;
 	    private ContentType responseContentType = ContentType.JSON;
 	    public String accessToken="";
+	    
+	    
 
 	    @Test
 	    public void TC001_PostPlayerLogin() throws AutomationException {
 
-        ExtentTestManager.startTest("Get player login ", "To verify that player is able to get login in system through API");
-    	JSONObject body = new JSONObject();
-    	body.put("email", "CS-1400");
-    	body.put("password", "Gameium@1234");
-    	Response response = sendPostRequestWithAuthorization(APIEndPoint.PLAYER_LOGIN, body);
-    	
-		JsonPath jsonpath = response.jsonPath().prettyPeek();
-		accessToken = jsonpath.getString("authorization.accessToken.token");
-		System.out.println("player accessToken = "+accessToken);
-		// Status code verification
-		int statusResponseCode = response.getStatusCode();
-		System.out.println("Status code is " + statusResponseCode);
-    	
-//	        RestUtil restInstance =
-//	                RestUtil.init()
-//	                        .path(APIEndPoint.PLAYER_LOGIN)
-//	                        .expectedStatusCode(httpStatus)
-//	                        .expectedResponseContentType(this.responseContentType)
-//	                        //.post(body.toJSONString());
-	       
+	    	ExtentTestManager.startTest("Get player login ","To verify that player is able to get login in system through API");
+			JSONObject body = new JSONObject();
+			body.put("email", "CS-1400");
+			body.put("password", "Gameium@1234");
+			RestUtil restInstance = 
+					RestUtil.init()
+					        .path(APIEndPoint.PLAYER_LOGIN)
+					        .contentType(ContentType.JSON)
+					        .body(body)
+					        .expectedStatusCode(httpStatus)
+					        .expectedResponseContentType(this.responseContentType)
+					        .post();
+			if (!isNegativeTest) {
+				playerData = restInstance.responseToPojo(new TypeReference<List<PlayerData>>() {
+				});
+			} else {
+				playerData = restInstance.responseToPojo(ValidationError.class);
+			}
 
 	     }
 	    	  
@@ -71,9 +74,12 @@ public class TC_FishGameplay  extends TestInit {
 	        RestUtil restInstance =
 	                RestUtil.init()
 	                        .path(APIEndPoint.FISH_GAME_SESSION)
-	                        .expectedStatusCode(httpStatus)
-	                        .expectedResponseContentType(this.responseContentType)
-	                        .post_withAuth(body.toJSONString(),accessToken);
+	                        .contentType(ContentType.JSON)
+	                        .headers("Authorization","Bearer "+((List<PlayerData>) playerData).get(0).getAuthorization().getAccessToken().getToken().toString())
+					        .body(body)
+					        .expectedStatusCode(httpStatus)
+					        .expectedResponseContentType(this.responseContentType)
+					        .post();
 	        if (!isNegativeTest) {
 	            responsePayload = restInstance.responseToPojo(new TypeReference<List<FishGameSession>>() {});
 	        } else {
@@ -108,13 +114,6 @@ public class TC_FishGameplay  extends TestInit {
 
 	     }
 	    
-	    public Response sendPostRequestWithAuthorization(String path, JSONObject requestBody) {
-			RestAssured.baseURI = "https://qaautomation-api.cosmoslots.tech/";
-			RequestSpecification httpRequest = RestAssured.given();
-			httpRequest.header("Content-Type", "application/json");
-			httpRequest.body(requestBody.toJSONString());
-			return httpRequest.request(Method.POST, path);
-		}
 
 	
 }

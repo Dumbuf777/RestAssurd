@@ -6,7 +6,7 @@ import org.testng.annotations.Test;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 
-import framework.model.Player;
+import framework.model.PlayerData;
 import framework.model.User;
 import framework.model.error.ValidationError;
 import framework.service.PlayerService;
@@ -40,11 +40,11 @@ public class TC_GetPlayer extends TestInit {
 	                        .expectedResponseContentType(responseContentType)
 	                        .get_withAuth();
 
-//	        if (!isNegativeTest) {
-//	            responsePayload = restInstance.responseToPojo(new TypeReference<List<Player>>() {});
-//	        } else {
-//	            responsePayload = restInstance.responseToPojo(ValidationError.class);
-//	        }
+	        if (!isNegativeTest) {
+	            responsePayload = restInstance.responseToPojo(new TypeReference<List<PlayerData>>() {});
+	        } else {
+	            responsePayload = restInstance.responseToPojo(ValidationError.class);
+	        }
 
     }
 	

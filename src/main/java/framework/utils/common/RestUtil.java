@@ -13,13 +13,11 @@ import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
 import io.restassured.http.Cookie;
 import io.restassured.http.Cookies;
-import io.restassured.http.Header;
-import io.restassured.http.Headers;
 import io.restassured.http.Method;
-import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import io.restassured.specification.RequestSpecification;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Map;
 
@@ -29,8 +27,7 @@ import static io.restassured.RestAssured.given;
 
 /* -----------------------------------------------------------------------
    - ** Rest API Testing Framework using RestAssured **
-   - Author: Krishan Chawla (krishanchawla1467@gmail.com)
-   - Git Repo: https://github.com/krishanchawla/api-testing-rest-assured-java-framework
+ 
    ----------------------------------------------------------------------- */
 public class RestUtil {
 
@@ -131,6 +128,16 @@ public class RestUtil {
      */
     public RestUtil headers(Map<String, String> headers) {
         requestSpecBuilder.addHeaders(headers);
+        return this;
+    }
+    /**
+     * Defines Headers to Request Specification
+     *
+     * @param headers
+     * @return this
+     */
+    public RestUtil headers(String key, String value) {
+        requestSpecBuilder.addHeader(key,value);
         return this;
     }
 
@@ -268,13 +275,13 @@ public class RestUtil {
                         .log().all()
                         .filter(new APIResponseFilter())
                         .spec(requestSpecification)
-                        .when()
+                 .when()
                         .delete()
-                        .then()
+                 .then()
                         .assertThat()
                         .statusCode(expectedStatusCode.getCode())
                         .contentType(expectedResponseContentType)
-                        .and()
+                 .and()
                         .extract()
                         .response();
 
@@ -315,7 +322,7 @@ public class RestUtil {
         apiResponse =
                 given()
                         .log().all()
-                        .header("Content-Type", "application/json") // Example of adding a header
+                        //.header("Content-Type", "application/json") // Example of adding a header
                         .filter(new APIResponseFilter())
                         .spec(requestSpecification)
                         .body(requestBody) // Include the request body here
@@ -328,29 +335,21 @@ public class RestUtil {
                 .and()
                         .extract()
                         .response();
-       //  accessToken = apiResponse.jsonPath().getString("authorization.accessToken.token");
-     // Extract the access token from the response
-        try {
-            JsonPath jsonPath = apiResponse.jsonPath();
-            accessToken = jsonPath.getString("authorization.accessToken.token");
-            System.out.println(accessToken);
-        } catch (Exception e) {
-            // Handle any exception occurred during token extraction
-            System.err.println("Error extracting access token: " + e.getMessage());
-        }
+//       //  accessToken = apiResponse.jsonPath().getString("authorization.accessToken.token");
+//     // Extract the access token from the response
+//        try {
+//            JsonPath jsonPath = apiResponse.jsonPath();
+//            accessToken = jsonPath.getString("authorization.accessToken.token");
+//            System.out.println(accessToken);
+//        } catch (Exception e) {
+//            // Handle any exception occurred during token extraction
+//            System.err.println("Error extracting access token: " + e.getMessage());
+//        }
 
         return this;
     }
     
-    public String getAccessToken() {
-		return accessToken;
-	}
-
-	public void setAccessToken(String accessToken) {
-		this.accessToken = accessToken;
-	}
-    
-    
+         
     public RestUtil post_withAuth(String requestBody) {
         requestSpecification = requestSpecBuilder.build();
         apiResponse =
@@ -399,9 +398,6 @@ public class RestUtil {
         return this;
     }
     
-    
-
-
     /**
      * Hits the Pre-Defined Request Specification as GET Request
      * <p>
@@ -418,13 +414,13 @@ public class RestUtil {
                         .log().all()
                         .filter(new APIResponseFilter())
                         .spec(requestSpecification)
-                        .when()
+                 .when()
                         .get()
-                        .then()
+                 .then()
                         .assertThat()
                         .statusCode(expectedStatusCode.getCode())
                         .contentType(expectedResponseContentType)
-                        .and()
+                  .and()
                         .extract()
                         .response();
 
@@ -452,6 +448,26 @@ public class RestUtil {
         return this;
     }
     
+    public RestUtil post_withMultiPart() {
+        requestSpecification = requestSpecBuilder.build();
+        apiResponse =
+                given()
+                        .log().all()
+                        .multiPart("file", new File("D://OneDrive - Om BPM LLP//Pictures//Screenshots//Screenshot 2024-04-23 113227.png"))
+                        .filter(new APIResponseFilter())
+                        .spec(requestSpecification)
+                  .when()
+                        .post()
+                  .then()
+                        .assertThat()
+                        .statusCode(expectedStatusCode.getCode())
+                        .contentType(expectedResponseContentType)
+                  .and()
+                        .extract()
+                        .response();
+
+        return this;
+    }
   
     /**
      * Returns the apiResponse Object
@@ -470,6 +486,14 @@ public class RestUtil {
     public String getApiResponseAsString() {
         return apiResponse.asString();
     }
+    /**
+    * Returns the apiResponse Object as String
+    *
+    * @return apiResponse
+    */
+   public String getApiResponseAsJsonPath() {
+       return apiResponse.jsonPath().prettyPeek().toString();
+   }
 
     /**
      * Converts the Response Object into the provided Class Type
@@ -511,9 +535,7 @@ public class RestUtil {
 		httpRequest.body(requestBody.toJSONString());
 		return httpRequest.request(Method.PUT, "auth/v1/user/change-password/"+ids);
 	}
-	
-	
-	
+		
 	public Response sendPostRequestWithAuthorization(String path, JSONObject requestBody, String authToken) {
 		RestAssured.baseURI = "https://qaautomation-api.cosmoslots.tech/";
 		RequestSpecification httpRequest = RestAssured.given();

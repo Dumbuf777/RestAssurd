@@ -1,0 +1,22 @@
+GitHub
+
+1) git init      ----create an empty local repository
+2) git config --global user.name "Your github username"
+3) git config --global user.email "your github email"
+4) git status 
+5) git add -A ---> add all the files & floders to staging areas   OR
+6) git add *.java ------- adding only all java files  
+7) git commit -m "message"
+------------------------------------------------------------------
+
+push code to the remote repository
+7) git remote add origin "remote url"
+9) git push -u origin "branch name"  
+
+--------------------------------------------------------------------
+crate github remote repository
+create project name folder in c drive as a local repo.
+then execte git init ------ for initilizing the git reposi
+
+push code in remote repository:-
+git remote add origin "remote url"------git hub repository url (integrationg local repos to remote repository)

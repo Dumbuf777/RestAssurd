@@ -49,6 +49,7 @@ public class TestInit {
 
     @BeforeMethod(alwaysRun = true)
     public void config(ITestResult result) {
+    	System.out.println("*********************************************************************");
     }
 
     @AfterMethod(alwaysRun = true)
@@ -63,6 +64,8 @@ public class TestInit {
         }
 
         ExtentTestManager.endTest();
+    	System.out.println("*********************************************************************");
+
     }
 
     @AfterSuite(alwaysRun = true)

@@ -40,9 +40,11 @@ public class TC_Gameplay  extends TestInit {
 	        RestUtil restInstance =
 	                RestUtil.init()
 	                        .path(APIEndPoint.PLAYER_LOGIN)
-	                        .expectedStatusCode(httpStatus)
-	                        .expectedResponseContentType(this.responseContentType)
-	                        .post(body.toJSONString());
+	                        .contentType(ContentType.JSON)
+					        .body(body)
+					        .expectedStatusCode(httpStatus)
+					        .expectedResponseContentType(this.responseContentType)
+					        .post();
 	        if (!isNegativeTest) {
 	            responsePayload = restInstance.responseToPojo(new TypeReference<List<PlayerData>>() {});
 	        } else {

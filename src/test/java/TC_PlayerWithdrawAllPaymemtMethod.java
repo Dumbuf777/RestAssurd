@@ -26,22 +26,22 @@ public class TC_PlayerWithdrawAllPaymemtMethod extends TestInit {
 	private boolean isNegativeTest = false;
 	private HttpStatus httpStatus = HttpStatus.OK;
 	private ContentType responseContentType = ContentType.JSON;
-	public String accessToken = "";
 
 	@Test
 	public void TC001_PostPlayerLogin() throws AutomationException {
 
-		ExtentTestManager.startTest("Get player login ",
-				"To verify that player is able to get login in system through API");
+		ExtentTestManager.startTest("Get playerlogin ","To verify that player is able to get login in system through API");
 		JSONObject body = new JSONObject();
 		body.put("email", "CS-1400");
 		body.put("password", "Gameium@1234");
 		RestUtil restInstance = 
 				RestUtil.init()
 				        .path(APIEndPoint.PLAYER_LOGIN)
+				        .contentType(ContentType.JSON)
+				        .body(body)
 				        .expectedStatusCode(httpStatus)
 				        .expectedResponseContentType(this.responseContentType)
-				        .post(body.toJSONString());
+				        .post();
 		if (!isNegativeTest) {
 			playerData = restInstance.responseToPojo(new TypeReference<List<PlayerData>>() {
 			});
@@ -50,7 +50,7 @@ public class TC_PlayerWithdrawAllPaymemtMethod extends TestInit {
 		}
 
 	}
-	
+
 	@Test
 	public void TC002_PostPlayerWitdraw_SKRILL() throws AutomationException, JsonProcessingException {
 		ExtentTestManager.startTest("Player Withdraw_SKRILL ",
@@ -80,7 +80,7 @@ public class TC_PlayerWithdrawAllPaymemtMethod extends TestInit {
 		}
 		
 	}
-		
+	
 	@Test
 	public void TC003_PostPlayerWitdraw_WALLET() throws AutomationException, JsonProcessingException {
 		ExtentTestManager.startTest("Player Withdraw_WALLET",

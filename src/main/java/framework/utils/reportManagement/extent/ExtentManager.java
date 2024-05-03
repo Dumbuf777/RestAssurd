@@ -36,7 +36,7 @@ public class ExtentManager {
         String fileName = getReportPath(reportFilepath);
 
         ExtentSparkReporter htmlReporter = new ExtentSparkReporter(fileName);
-        htmlReporter.config().setTheme(Theme.STANDARD);
+        htmlReporter.config().setTheme(Theme.DARK);
         htmlReporter.config().setDocumentTitle(reportFileName);
         htmlReporter.config().setEncoding("utf-8");
         htmlReporter.config().setReportName(reportFileName);
