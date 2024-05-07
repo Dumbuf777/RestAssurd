@@ -8,6 +8,7 @@ import framework.utils.globalConstants.HttpStatus;
 import framework.utils.logManagement.APIResponseFilter;
 import framework.utils.propertiesManagement.TestProperties;
 import io.restassured.RestAssured;
+import io.restassured.authentication.PreemptiveBasicAuthScheme;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.config.EncoderConfig;
 import io.restassured.http.ContentType;
@@ -227,6 +228,19 @@ public class RestUtil {
      */
     public RestUtil expectedResponseContentType(String contentType) {
         this.expectedResponseContentType = contentType;
+        return this;
+    }
+    
+    public RestUtil basicAuth(String username, String password) {
+    	PreemptiveBasicAuthScheme authScheme = new PreemptiveBasicAuthScheme();
+        authScheme.setUserName(username);
+        authScheme.setPassword(password);
+        requestSpecBuilder.setAuth(authScheme);
+        return this;
+    }
+
+    public RestUtil oauth2(String accessToken) {
+        requestSpecBuilder.addHeader("Authorization", "Bearer " + accessToken);
         return this;
     }
 
